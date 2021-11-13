@@ -1,0 +1,63 @@
+spring:
+  shardingsphere:
+    # 打印sql
+    props:
+      sql-show: true
+    # 配置数据源
+    datasource:
+      # 配置公共数据源信息
+      common:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      # 配置数据源列表
+      names: demo0,demo1
+      demo0:
+        # 配置第 1 个数据源
+        jdbc-url: jdbc:mysql://localhost:3306/demo0?serverTimezone=GMT%2B8
+        username: root
+        password: 1234
+      demo1:
+        # 配置第 2 个数据源
+        jdbc-url: jdbc:mysql://localhost:3306/demo1?serverTimezone=GMT%2B8
+        username: root
+        password: 1234
+    # 配置规则
+    rules:
+      sharding:
+        # 配置表信息
+        tables:
+          # 配置逻辑表及其对应的数据节点
+          tbl:
+            actual-data-nodes: demo$->{0..1}.tbl$->{0..1}
+            # 绑定分库策略
+            database-strategy:
+              standard:
+                sharding-column: id
+                sharding-algorithm-name: database-inline
+            # 绑定分表策略
+            table-strategy:
+              standard:
+                sharding-column: id
+                sharding-algorithm-name: table-inline
+        # 配置分片算法
+        sharding-algorithms:
+          database-inline:
+            type: INLINE
+            props:
+              algorithm-expression: demo$->{id % 2}
+          table-inline:
+            type: INLINE
+            props:
+              algorithm-expression: tbl$->{id % 2}
+        # 配置主键策略
+        key-generators:
+          snowflake:
+            type: SNOWFLAKE
+            props:
+              worker-id: 123
+
+
+
+
+
+

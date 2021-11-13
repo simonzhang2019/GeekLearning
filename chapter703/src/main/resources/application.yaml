@@ -1,0 +1,18 @@
+#Spring配置
+spring:
+  #子配置文件选择
+  profiles:
+    active: demo
+  #Jackson配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+#服务端口
+server:
+  port: 8888
+
+#Mybatis配置
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
